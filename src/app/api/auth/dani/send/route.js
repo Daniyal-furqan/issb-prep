@@ -1,5 +1,6 @@
 import { db, ADMIN_EMAIL, ADMIN_PASS } from '@/lib/db';
 import { NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
 
 export async function POST(req) {
     try {
@@ -15,12 +16,24 @@ export async function POST(req) {
         // Save to DB
         db.save2FACode(email, code);
 
-        // Simulated email sending (In production, replace with Nodemailer/Resend)
-        console.log('\n=============================================');
-        console.log(`[SIMULATED EMAIL] To: ${email}`);
-        console.log(`Subject: Your ISSB Pro Admin 2FA Code`);
-        console.log(`Code: ${code}`);
-        console.log('=============================================\n');
+        // Setup Nodemailer transporter
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        // Send Real Email
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Your ISSB Pro Admin 2FA Code',
+            text: `Your admin login security code for ISSB Pro is: ${code}\n\nThis code will expire in 5 minutes.`
+        };
+
+        await transporter.sendMail(mailOptions);
 
         return NextResponse.json({ success: true, message: '2FA code sent to your email.' });
 
