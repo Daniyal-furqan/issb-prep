@@ -36,12 +36,20 @@ export async function POST(req) {
         let userPrompt = "";
         if (type === "WAT") {
             userPrompt = `Word: "${inputs}". Generate ${variations} variations of a short, positive sentence (max 5 words) using this word.`;
-        } else if (type === "SCT") {
-            userPrompt = `Starter: "${inputs}". Generate ${variations} variations to complete this sentence positively and shortly.`;
+        } else if (type === "SCT" || type === "SCT_Urdu") {
+            userPrompt = `Starter: "${inputs}". Generate ${variations} variations to complete this sentence positively and shortly. If the starter was in Urdu, feel free to reply in Roman Urdu or English.`;
+        } else if (type === "Essay") {
+            userPrompt = `Topic: "${inputs}". Generate ${variations} different highly structured, 150-word ISSB essay outlines/points (Intro, body, conclusion) emphasizing leadership.`;
         } else if (type === "Story") {
             userPrompt = `Starter: "${inputs}". Generate ${variations} variations of a story (80 words max) featuring a 29-year-old main character who overcomes a challenge and achieves success.`;
         } else if (type === "SRT") {
             userPrompt = `Situation: "${inputs}". Generate ${variations} variations of exact, practical actions prioritizing Duty > Family > Others, without assumptions.`;
+        } else if (type === "Verbal" || type === "NonVerbal") {
+            userPrompt = `Target: "${type} Intelligence Test". Generate ${variations} challenging ISSB intelligence multiple-choice questions with answers based on the target type. Keep the format concise.`;
+        } else if (type.startsWith("GTO")) {
+            userPrompt = `Target: "${type.replace("GTO_", "")} Test". Generate ${variations} distinct realistic scenarios or topics that a GTO would assign in ISSB. Include a sentence on what OLQs they test.`;
+        } else if (type.includes("Interview")) {
+            userPrompt = `Target: "${type.replace("_", " ")}". Generate ${variations} common, tough interview questions asked at ISSB, followed by a tip on how a leader should answer them.`;
         } else {
             userPrompt = `Prompt: "${inputs}". Generate ${variations} variations according to the persona.`;
         }
